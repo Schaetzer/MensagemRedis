@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MensagemRedis.Backend.Extensions;
-using MensagemRedis.Backend.Interfaces;
 using MensagemRedis.Backend.Models;
+using MensagemRedis.Backend.Interfaces;
 using MensagemRedis.Backend.Repository;
-using MensagemRedis.API.Interfaces;
 
-namespace MensagemRedis.API.Services
+namespace MensagemRedis.Backend.Services
 {
     public class RedisService : IRedisService
     {
         IDistributedCache _cache;
+        IMensagemRep _mensagemRep = new MensagemRep();
 
         public RedisService(IDistributedCache cache)
         {
@@ -20,7 +20,7 @@ namespace MensagemRedis.API.Services
         {
             string recordId = "TesteRevis_" + DateTime.Now.ToString("yyyyMMdd_hhmm");
             string origem = null;
-            var mensagens = _cache.GetRecordAsync<IEnumerable<MensagemRep>>(recordId).Result;
+            var mensagens = _cache.GetRecordAsync<List<Mensagem>>(recordId).Result;
 
 
             if (mensagens is null)
@@ -35,16 +35,20 @@ namespace MensagemRedis.API.Services
                 origem = $"Dados retirados do cache em {DateTime.Now}";
             }
 
-            ResponseMensagem result = new ResponseMensagem(origem, mensagens);
+            ResponseMensagem result = new ResponseMensagem()
+            {
+                Origem = origem,
+                Data = mensagens
+            };
 
             return result;
         }
 
-        public MensagemRep GetMensagensPorId(long id, long languageId)
+        public Mensagem GetMensagensPorId(long id, long languageId)
         {
             string recordId = "TesteRevis_" + DateTime.Now.ToString("yyyyMMdd_hhmm");
             string origem = null;
-            var mensagens = _cache.GetRecordAsync<IEnumerable<MensagemRep>>(recordId).Result;
+            var mensagens = _cache.GetRecordAsync<List<Mensagem>>(recordId).Result;
 
 
             if (mensagens is null)
@@ -59,7 +63,7 @@ namespace MensagemRedis.API.Services
                 origem = $"Dados retirados do cache em {DateTime.Now}";
             }
 
-            var result = mensagens.Single(sl => sl.Id.Equals(id));
+            var result = mensagens.Find(sl => sl.Id == id);
 
             if (result is null)
             {
@@ -69,21 +73,9 @@ namespace MensagemRedis.API.Services
             return result;
         }
 
-        private IEnumerable<MensagemRep> GetNovasMensagens()
+        private List<Mensagem> GetNovasMensagens()
         {
-            return new[]
-                {
-                    new MensagemRep()
-                    {
-                        Id = 1,
-                        Descricao = "Campo inválido."
-                    },
-                    new MensagemRep()
-                    {
-                        Id = 2,
-                        Descricao = "Campo fora dos padrões."
-                    }
-                }.ToList();
+            return _mensagemRep.GetMensagem();
         }
     }
 }

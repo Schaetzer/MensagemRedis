@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MensagemRedis.API.Interfaces;
+using MensagemRedis.Backend.Interfaces;
 
-namespace MensagemRedis.API.API.Controllers
+namespace MensagemRedis.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

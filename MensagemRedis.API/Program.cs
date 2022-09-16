@@ -1,11 +1,12 @@
-using MensagemRedis.API.Interfaces;
-using MensagemRedis.API.Services;
+using MensagemRedis.Backend.Interfaces;
+using MensagemRedis.Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
@@ -14,8 +15,8 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "RedisDemo_";
 });
-builder.Services.AddScoped<IRedisService, RedisService>();
 
+builder.Services.AddTransient<IRedisService, RedisService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

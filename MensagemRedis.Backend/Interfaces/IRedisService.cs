@@ -1,12 +1,10 @@
-﻿using MensagemRedis.Backend.Interfaces;
-using MensagemRedis.Backend.Models;
-using MensagemRedis.Backend.Repository;
+﻿using MensagemRedis.Backend.Models;
 
-namespace MensagemRedis.API.Interfaces
+namespace MensagemRedis.Backend.Interfaces
 {
     public interface IRedisService
     {
         ResponseMensagem GetMensagens();
-        MensagemRep GetMensagensPorId(long id, long languageId);
+        Mensagem GetMensagensPorId(long id, long languageId);
     }
 }
